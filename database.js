@@ -8,7 +8,10 @@ const uriLocal = "mongodb://localhost:27017/TinyUriDB";
 
 
 const connectDB = async () => {
-  await mongoose.connect(uriLocal);
+  await mongoose.connect(uriLocal,{
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  });
 };
 const database = mongoose.connection;
 
