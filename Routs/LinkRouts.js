@@ -10,6 +10,8 @@ LinksRouts.get("/", LinksController.getList);
 // LinksRouts.post("/", LinksController.add);
 // LinksRouts.put("/:id", LinksController.update);
 // LinksRouts.delete("/:id", LinksController.delete);
-LinksRouts.get("/:id",LinksController.redirect)
+LinksRouts.get("/:id",LinksController.redirect);
+LinksRouts.get("/:id/click-segmentation", LinksController.clickSegmentation); // פונקציה חדשה לסגמנטציה של הקליקים
+
 
 export default LinksRouts;
