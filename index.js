@@ -3,7 +3,7 @@ import cors from "cors"
 import bodyParser from "body-parser";
 import UsersRouts from './Routs/UsersRouts.js';
 import connectDB from './database.js';
-
+import LinksRouts from './Routs/LinkRouts.js';
 const port = 3000
 const app = express()
 
@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 // app.get("/users/:id", UsersController.getById);
 
 app.use('/users', UsersRouts);
-// app.use('/links', LinksRouts);
+app.use('/links', LinksRouts);
 
 // app.use(express.json());
 

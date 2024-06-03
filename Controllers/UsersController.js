@@ -1,22 +1,3 @@
-// const TasksController = {
-//     getList: (req, res) => {
-//       console.log(req.query.status);
-//       res.send([
-//         { id: 1, name: "task 1", status: "TODO" },
-//         { id: 2, name: "task 2", status: "Done" },
-//       ]);
-//     },
-//     getById: (req, res) => {
-//       res.send(`get task by id ${req.params.id}`);
-//     },
-//   };
-
-//   export default TasksController;
-
-
-// import UsersController from "../Models/Task.js";
-// import UsersController from "../Controllers/UsersContrller"
-// import UsersController from '../Controllers/UsersController.js';
 import User from "../Models/User.js";
 import Link from "../Models/Link.js";
 const UsersController = {
@@ -44,7 +25,7 @@ const UsersController = {
     console.log("Request Body: ", req.body);
 
     // הוצאת הנתונים מהבקשה
-    const { _id, name, email, password, links } = req.body;
+    const { name, email, password, links } = req.body;
 
     // בדיקה אם הנתונים הנדרשים קיימים
     if (!name || !email || !password || !Array.isArray(links)) {
@@ -52,11 +33,12 @@ const UsersController = {
     }
 
     try {
-      const linkObjects = await Link.insertMany(links); // יצירת קישורים חדשים אם יש קישורים במערך
-      const linkIds = linkObjects.map(link => link._id); // יצירת מערך של מזהי הקישורים
+      const linkDocuments = await Promise.all(links.map(link => new Link(link).save())); // יצירת מערך של מזהי הקישורים
       // יצירת משתמש חדש
-      const newUser = await User.create({ _id, name, email, password, links: linkIds });
+      const newUser = new User({  name, email, password, links: linkDocuments.map(link => link._id)  });
       // שליחת המשתמש החדש בתשובה
+      await newUser.save();
+
       res.json(newUser);
     } catch (e) {
       // הדפסת הודעת השגיאה
@@ -65,16 +47,8 @@ const UsersController = {
       res.status(400).json({ message: e.message });
     }
   },
+ 
 
-  // add: async (req, res) => {
-  //   const { name, email, password,links } = req.body;
-  //   try {
-  //     const newUser = await User.create({ name,email,password,links });//הוספת חדש
-  //     res.json(newUser);
-  //   } catch (e) {
-  //     res.status(400).json({ message: e.message });
-  //   }
-  // },
 
   update: async (req, res) => {
     const { id } = req.params;
@@ -83,7 +57,7 @@ const UsersController = {
     try {
       const linkObjects = await Link.insertMany(links); // יצירת קישורים חדשים אם יש קישורים במערך
       const linkIds = linkObjects.map(link => link._id); // יצירת מערך של מזהי הקישורים
-      const updatedUser = await User.findByIdAndUpdate(id, {name,email,password,links:linkIds},{new:true}).populate('links');// עדכון משתמש כולל ייבוא הקישורים
+      const updatedUser = await User.findByIdAndUpdate(id, { name, email, password, links: linkIds }, { new: true }).populate('links');// עדכון משתמש כולל ייבוא הקישורים
       res.json(updatedUser);
     } catch (e) {
       res.status(400).json({ message: e.message });
@@ -99,6 +73,8 @@ const UsersController = {
       res.status(400).json({ message: e.message });
     }
   },
+
+
 };
 
 export default UsersController;

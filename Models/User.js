@@ -10,7 +10,7 @@
 // });
 
 import mongoose from "mongoose";
-import Link from "./Link.js";
+// import Link from "./Link";
 
 // יצירת הסכמהimport Link from './Link.js'; // ודא שהנתיב נכון
 
